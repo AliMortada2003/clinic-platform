@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+button:hover {
+  cursor: pointer;
+  transition: ease-in-out;
+}
+/* تخصيص السكرول بار للمتصفحات (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px; /* عرض السكرول */
+}
+
+/* شكل الخلفية (المجرى) */
+::-webkit-scrollbar-track {
+  background: #070b14; /* نفس لون الدارك مود عندك */
+}
+
+/* شكل الـ Handle (الجزء المتحرك) */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    #22d3ee,
+    #3b82f6
+  ); /* تدرج سيان لـ أزرق */
+  border-radius: 20px; /* جعله دائري */
+  border: 2px solid #04163d; /* بيعمل مسافة وهمية حول السكرول */
+}
+
+/* شكل الـ Handle لما تقف عليه بالماوس */
+::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
+
+/* تخصيص السكرول لمتصفح Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #22d3ee #070b14;
+}
+
+/* أضف هذا في ملف الـ CSS الخاص بك أو داخل ستايل السكشن */
+.swiper-wrapper {
+  display: flex !important;
+  transition-timing-function: linear; /* يجعل الحركة أنعم في الاوتو بلاي */
+}
+
+.typewriter-container {
+  display: inline-block;
+  direction: rtl;
+  unicode-bidi: isolate; /* هذا السطر يمنع تداخل الحروف في Safari */
+  text-align: right;
+}

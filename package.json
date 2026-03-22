@@ -1,0 +1,50 @@
+{
+  "name": "Doctor-System-platform",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query-devtools": "^5.91.3",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
+    "axios": "^1.13.6",
+    "firebase": "^12.9.0",
+    "formik": "^2.4.9",
+    "framer-motion": "^12.29.2",
+    "lucide-react": "^0.563.0",
+    "motion": "^12.29.2",
+    "react": "^19.2.0",
+    "react-countup": "^6.5.3",
+    "react-dom": "^19.2.0",
+    "react-fast-marquee": "^1.6.5",
+    "react-intersection-observer": "^10.0.2",
+    "react-router-dom": "^7.13.0",
+    "react-type-animation": "^3.2.0",
+    "sweetalert2": "^11.26.22",
+    "swiper": "^12.1.0",
+    "tsparticles": "^3.9.1",
+    "universal-cookie": "^8.0.1",
+    "yup": "^1.7.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.24",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.2.4"
+  }
+}
