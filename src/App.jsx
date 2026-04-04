@@ -13,7 +13,7 @@ import "./App.css";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1, // محاولة إعادة الطلب مرة واحدة فقط في حال الفشل
+      retry: 4, // محاولة إعادة الطلب مرة واحدة فقط في حال الفشل
       refetchOnWindowFocus: false, // عدم إعادة الطلب عند تبديل التبويبات
     },
   },
@@ -25,11 +25,11 @@ const AppContent = () => {
   return (
     <div className="min-h-screen overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
       <ScrollToTop />
-      <Header />
+      {/* <Header /> */}
       <main>
         <AppRouter />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

@@ -94,12 +94,10 @@ const ServicesSlider = () => {
         {/* السلايدر */}
         <div className="services-swiper-container relative">
           <Swiper
-            modules={[Autoplay, Pagination, Navigation]}
+            modules={[Autoplay, Pagination]}
             spaceBetween={25}
             slidesPerView={1}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
-            pagination={{ clickable: true, dynamicBullets: true }}
-            navigation={true}
             breakpoints={{
               640: { slidesPerView: 2 },
               1024: { slidesPerView: 3 },

@@ -10,5 +10,4 @@ const axiosApi = axios.create({
     },
     // withCredentials: false, // شيلها أو خليها false لو مش بتستخدم Cookies في الـ API حالياً
 });
-
 export default axiosApi;

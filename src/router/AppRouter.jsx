@@ -9,6 +9,8 @@ import ReserveSections from "../pages/ReservePage/ReservePage";
 import QyestionPage from "../pages/QuestionsPage/QyestionPage";
 import Login from "../pages/loginPage/LoginPage";
 import Register from "../pages/registerPage/RegisterPage";
+import AdminRoutes from "../pages/Admin_Dashboard/Router/AdminRoutes";
+import PrivateRoute from "./PrivateRoute";
 
 // استيراد المكونات
 
@@ -24,6 +26,11 @@ const AppRouter = () => {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             {/* صفحة 404 */}
+
+            {/* ✅ Dashboards (Lazy Loaded) */}
+            <Route path="/admin/*" element={<PrivateRoute allowedRoles={["admin"]} />}>
+                <Route path="*" element={<AdminRoutes />} />
+            </Route>
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

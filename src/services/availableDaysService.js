@@ -1,45 +1,52 @@
-import axiosApi from "../Axios/axios"
+import axiosApi from "../Axios/axios";
 
-export const getAllAvailableDays = async ()=>{
-    const res = await axiosApi.get("/AvailableDay");
-    // console.log(res.data);
-    return res.data;
-}
+const availableDayService = {
+    // جلب كل الأيام المتاحة
+    getAll: async () => {
+        const res = await axiosApi.get("AvailableDay/WithUnAvailable");
+        // console.log(res)
+        return res.data;
+    },
+    getAllAvailableDays: async () => {
+        const res = await axiosApi.get("AvailableDay");
+        // console.log(res)
+        return res.data;
+    },
+    // إضافة يوم جديد (Admin Only)
+    // ملاحظة: غيرتها لـ post ومررت الداتا اللي هتبعتها
+    add: async (dayData) => {
+        const res = await axiosApi.post("/AvailableDay", dayData);
+        // console.log(res)
+        return res.data;
+    },
 
-// add available day for admin only
-export const addAvailableDay = async ()=>{
-    const res = await axiosApi.get("/AvailableDay");
-    return res.data;
-}
+    // جلب يوم محدد بالتفاصيل
+    getById: async (id) => {
+        const res = await axiosApi.get(`/AvailableDay/${id}`);
+        return res.data;
+    },
 
-// get one Day 
-export const getOneAvailableDay = async (id) =>{
-    const res = await axiosApi.get(`/AvailableDay/${id}`);
-    return res.data;
-}
+    // حذف يوم (Admin Only)
+    delete: async (id) => {
+        const res = await axiosApi.delete(`/AvailableDay/${id}`);
+        return res.data;
+    },
 
-// delete Available Day for admin only
-export const DeleteAvailableDay = async (id)=>{
-    const res = await axiosApi.delete(`/AvailableDay/${id}`);
-    return res.data;
-}
-
-// Active Day, for admin only
-export const avtiveAvailableDay = async(id)=>{
-    const res = await axiosApi.patch(`/AvailableDay/Activate`, null, {
-            params: {
-                id: id
-            }
+    // تفعيل اليوم (Admin Only)
+    activate: async (id) => {
+        const res = await axiosApi.patch(`/AvailableDay/Activate`, null, {
+            params: { id }
         });
         return res.data;
-}
+    },
 
-// Cancel active Day for admin only
-export const cancelAvailableDay = async(id)=>{
-    const res = await axiosApi.patch(`/AvailableDay/Cancel`, null,{
-        params:{
-            id:id
-        }
-    });
-    return res.data;
-}
+    // إلغاء تفعيل اليوم (Admin Only)
+    cancel: async (id) => {
+        const res = await axiosApi.patch(`/AvailableDay/Cancel`, null, {
+            params: { id }
+        });
+        return res.data;
+    }
+};
+
+export default availableDayService;

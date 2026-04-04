@@ -1,5 +1,5 @@
-import { ChevronRight, ChevronLeft, Loader2, Calendar as CalendarIcon, Star, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { CalendarIcon, ChevronLeft, ChevronRight, Loader2, Sparkles } from "lucide-react";
+import { motion } from 'framer-motion';
 
 const CalendarView = ({
     currentDate,
@@ -16,100 +16,97 @@ const CalendarView = ({
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const isPrevDisabled = year <= today.getFullYear() && month <= today.getMonth();
 
-    // تشكيلة أيام الأسبوع بشكل شيك
     const weekDays = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
 
     return (
-        <div className="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[3rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/20 dark:border-slate-800 transition-all duration-500">
+        <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 border border-slate-100 dark:border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden">
 
-            {/* زخرفة خلفية خفيفة */}
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            {/* زخرفة خلفية بسيطة Premium Feeling */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Header: Month & Navigation */}
-            <div className="relative flex items-center justify-between mb-12 px-2">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-2xl text-cyan-600 dark:text-cyan-400">
-                        <CalendarIcon size={24} />
+            {/* Header القسم العلوي */}
+            <div className="flex items-center justify-between mb-10 relative z-10">
+                <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-[1.2rem] flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                        <CalendarIcon size={26} strokeWidth={2.5} />
                     </div>
                     <div>
-                        <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white capitalize tracking-tight">
+                        <h3 className="text-2xl font-black text-slate-800 dark:text-white leading-tight">
                             {currentDate.toLocaleString('ar-EG', { month: 'long' })}
                         </h3>
-                        <p className="text-slate-400 text-sm font-bold">{year}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-white/5 rounded-lg text-slate-400 text-xs font-black tracking-widest">{year}</span>
+                            {daysLoading && <Sparkles size={12} className="text-cyan-500 animate-pulse" />}
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex gap-3 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-[1.5rem] border border-slate-200/50 dark:border-slate-700/50">
+                <div className="flex gap-2 bg-slate-50 dark:bg-white/5 p-2 rounded-2xl border border-slate-100 dark:border-white/5">
                     <button
                         onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
                         disabled={isPrevDisabled}
-                        className="p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl disabled:opacity-10 transition-all active:scale-90 shadow-sm dark:text-white"
+                        className="p-3 hover:bg-white dark:hover:bg-slate-800 rounded-xl disabled:opacity-40 transition-all text-slate-600 dark:text-slate-300 shadow-sm active:scale-90"
                     >
-                        <ChevronRight size={22} />
+                        <ChevronRight size={22} strokeWidth={3} />
                     </button>
                     <button
                         onClick={() => setCurrentDate(new Date(year, month + 1, 1))}
-                        className="p-3 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all active:scale-90 shadow-sm dark:text-white"
+                        className="p-3 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all text-slate-600 dark:text-slate-300 shadow-sm active:scale-90"
                     >
-                        <ChevronLeft size={22} />
+                        <ChevronLeft size={22} strokeWidth={3} />
                     </button>
                 </div>
             </div>
 
-            {/* Week Days Label */}
-            <div className="grid grid-cols-7 mb-6">
-                {weekDays.map((d, index) => (
-                    <div key={d} className="text-center font-black md:text-[18px] text-[12px] uppercase tracking-widest text-cyan-500">
+            {/* أيام الأسبوع */}
+            <div className="grid grid-cols-7 mb-6 relative z-10">
+                {weekDays.map(d => (
+                    <div key={d} className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                         {d}
                     </div>
                 ))}
             </div>
 
-            {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-2 ">
+            {/* شبكة الأيام */}
+            <div className="grid grid-cols-7 gap-3 relative z-10">
                 {daysLoading ? (
-                    <div className="col-span-7 py-24 flex flex-col items-center justify-center">
+                    <div className="col-span-7 py-24 flex flex-col items-center">
                         <div className="relative">
-                            <Loader2 className="animate-spin text-cyan-500" size={48} />
-                            <Sparkles className="absolute -top-2 -right-2 text-amber-400 animate-pulse" size={20} />
+                            <Loader2 className="animate-spin text-cyan-500 mb-4" size={48} strokeWidth={1.5} />
+                            <div className="absolute inset-0 blur-xl bg-cyan-500/20 animate-pulse" />
                         </div>
-                        <span className="mt-4 text-slate-400 font-bold animate-pulse">جاري تنسيق المواعيد...</span>
+                        <p className="text-slate-400 text-sm font-bold tracking-wide">جاري فحص المواعيد المتاحة...</p>
                     </div>
                 ) : (
                     <>
                         {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-                            <div key={`e-${i}`} className="aspect-square" />
+                            <div key={`empty-${i}`} />
                         ))}
-
                         {Array.from({ length: daysInMonth }).map((_, i) => {
                             const day = i + 1;
                             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                            const isAvailable = serverDays?.some(d => (d.availableDay || d.date)?.startsWith(dateStr)) && new Date(year, month, day) >= today;
+                            const isAvailable = serverDays?.some(d => (d.date || d.availableDay)?.startsWith(dateStr)) && new Date(year, month, day).setHours(0, 0, 0, 0) >= new Date(today).setHours(0, 0, 0, 0);
                             const isSelected = selectedDayName === dateStr;
-
                             return (
                                 <motion.button
                                     key={day}
-                                    whileHover={isAvailable ? { scale: 1.05, y: -5 } : {}}
+                                    whileHover={isAvailable ? { scale: 1.1, y: -2 } : {}}
                                     whileTap={isAvailable ? { scale: 0.9 } : {}}
                                     onClick={() => handleDayClick(day, isAvailable)}
-                                    className={`relative  rounded-2xl flex items-center justify-center transition-all duration-300 border-2 font-black 
-    ${isAvailable
-                                            ? 'bg-emerald-50 border-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400 hover:shadow-lg hover:shadow-emerald-500/20'
-                                            : 'border-transparent text-slate-300 dark:text-slate-700 pointer-events-none'}
-    ${isSelected
-                                            ? '!bg-emerald-500 !border-emerald-400 !text-white scale-110 shadow-xl shadow-emerald-500/40 z-10'
+                                    className={`
+                                        aspect-square rounded-2xl flex flex-col items-center justify-center text-sm font-black transition-all relative
+                                        ${isAvailable
+                                            ? 'bg-cyan-100 dark:bg-cyan-500/10 border-2 border-cyan-100 dark:border-cyan-500/20 text-cyan-500 dark:text-cyan-400 cursor-pointer shadow-sm shadow-cyan-500/5'
+                                            : 'text-slate-400 dark:text-slate-700 pointer-events-none border-2 border-transparent'}
+                                        ${isSelected
+                                            ? '!bg-cyan-500 !border-cyan-500 !text-white shadow-2xl shadow-cyan-500/40 z-20 scale-110'
                                             : ''}
-`}
+                                    `}
                                 >
-                                    <span className="relative  z-10">{day}</span>
-
-                                    {/* أيقونة التوفر الصغيرة */}
+                                    {day}
+                                    {/* نقطة "متاح" لو مش مختارين اليوم */}
                                     {isAvailable && !isSelected && (
-                                        <div className="absolute top-2 right-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-ping"></div>
-                                        </div>
+                                        <span className="absolute bottom-1.5 w-1 h-1 bg-cyan-500 rounded-full" />
                                     )}
                                 </motion.button>
                             );
@@ -118,21 +115,20 @@ const CalendarView = ({
                 )}
             </div>
 
-            {/* Footer Footer خفيف */}
+            {/* Footer التوضيحي */}
             {!daysLoading && (
-                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-6">
+                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-white/5 flex justify-center gap-6">
                     <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">مواعيد متاحة</span>
+                        <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">متاح للحجز</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">غير متاح</span>
+                        <div className="w-2 h-2 rounded-full bg-slate-200 dark:bg-slate-700" />
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">غير متاح</span>
                     </div>
                 </div>
             )}
         </div>
     );
 };
-
 export default CalendarView;

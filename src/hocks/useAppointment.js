@@ -1,89 +1,138 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-import { bookGuestAppointment, updateAppointmentStatus } from '../services/Appointment';
+import appointmentService from './../services/Appointment'; // المصدر الموحد للـ API
+import { showSuccessAlert } from '../helpers/boock.helper';
 
 export const useAppointment = () => {
     const queryClient = useQueryClient();
 
-    // هوك الحجز الجديد (Guest)
-const createGuestBooking = useMutation({
-    mutationFn: ({ slotId, patientData }) => bookGuestAppointment(slotId, patientData),
-    onSuccess: (data, variables) => {
-        console.log(data);
-        // تحديث السلوتس فوراً
-        queryClient.invalidateQueries(['slots']); 
-        
-        // استخراج البيانات من الـ variables اللي اتبعتت ومن الـ data اللي رجعت من السيرفر
-        const { patientData } = variables;
-        const reservationDate = data.availableDay || "سيتم التأكيد";
-        const reservationTime = data.startTime || "سيتم التأكيد";
+    // 1. جلب كل المواعيد (للأدمن)
+    const appointmentsQuery = useQuery({
+        queryKey: ['appointments'],
+        queryFn: appointmentService.getAll, // استخدام الـ service الجديدة
+    });
 
-        Swal.fire({
-            icon: 'success',
-            title: '<span className="text-2xl font-black text-cyan-600">تأكيد الحجز بنجاح</span>',
-            html: `
-                <div className="text-right mt-4 p-6 border-2 border-dashed border-cyan-100 rounded-3xl bg-slate-50 dark:bg-slate-900 font-sans" dir="rtl">
-                    <div className="flex justify-between border-b pb-3 mb-4">
-                        <span className="text-slate-500">رقم الحجز:</span>
-                        <span className="font-bold text-cyan-600">#${data.id || '---'}</span>
-                    </div>
-                    
-                    <div className="space-y-3">
-                        <div className="flex justify-between">
-                            <span className="text-slate-500">اسم المريض:</span>
-                            <span className="font-bold text-slate-800 dark:text-white">${patientData.name || 'غير مسجل'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-slate-500">رقم الهاتف:</span>
-                            <span className="font-bold text-slate-800 dark:text-white">${patientData.phoneNumber || 'غير مسجل'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-slate-500">تاريخ الحجز:</span>
-                            <span className="font-bold text-slate-800 dark:text-white">${reservationDate}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-slate-500">الوقت المحدد:</span>
-                            <span className="font-bold text-emerald-600">${reservationTime}</span>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-                        <p className="text-xs text-slate-400">يرجى تصوير الشاشة والاحتفاظ بهذا الإيصال لإظهاره في العيادة</p>
-                    </div>
-                </div>
-            `,
-            showConfirmButton: true,
-            confirmButtonText: 'حفظ وإغلاق',
-            confirmButtonColor: '#0891b2',
-            background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff', // دعم الدارك مود
-            customClass: {
-                popup: 'rounded-[2.5rem]',
-                confirmButton: 'rounded-xl px-8 py-3 font-bold'
-            }
-        });
-    },
-    onError: (err) => {
-        const errorMsg = err.response?.data?.message || 'حدث خطأ أثناء إرسال البيانات';
-        Swal.fire({
-            title: 'فشل الحجز',
-            text: errorMsg,
-            icon: 'error',
-            confirmButtonColor: '#ef4444'
-        });
-    }
-});
-
-    // ممكن تضيف هنا mutation تانية لتغيير الحالة (للأدمن)
-    const changeStatus = useMutation({
-        mutationFn: ({ aid, status }) => updateAppointmentStatus(aid, status),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['appointments']);
-            Swal.fire('تم التحديث', 'تم تغيير حالة الحجز بنجاح', 'success');
+    // 2. هوك الحجز لـ Guest
+    const createGuestBooking = useMutation({
+        mutationFn: ({ slotId, patientData }) => appointmentService.bookGuest(slotId, patientData),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries(['slots']);
+            showSuccessAlert(data);
+            console.log(data)
+        },
+        onError: (err) => {
+            console.log(err.response?.data)
+            Swal.fire({
+                title: 'عذراً، فشل الحجز',
+                text: err.response?.data || 'تأكد من صلاحية الجلسة وحاول ثانياً',
+                icon: 'error',
+                confirmButtonColor: '#ef4444',
+                background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                customClass: { popup: 'rounded-[2rem]' }
+            })
         }
     });
 
+    // 3 Real User Book
+    const bookPatient = useMutation({
+        mutationFn: ({ patientId, slotId }) => appointmentService.bookPatient(patientId, slotId),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries(['slots']);
+            showSuccessAlert(data);
+            console.log(data)
+        },
+        onError: (err) => {
+            Swal.fire({
+                title: 'عذراً، فشل الحجز',
+                text: err.response?.data?.message || 'تأكد من صلاحية الجلسة وحاول ثانياً',
+                icon: 'error',
+                confirmButtonColor: '#ef4444',
+                background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                customClass: { popup: 'rounded-[2rem]' }
+            })
+        }
+    });
+    // 3. تغيير الحالة (Accepted / Pending)
+    const changeStatus = useMutation({
+        mutationFn: ({ aid, status }) => appointmentService.updateStatus(aid, status),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['appointments']);
+            Swal.fire({
+                icon: 'success',
+                title: 'تم التحديث',
+                text: 'تم تغيير حالة الحجز بنجاح',
+                timer: 2000,
+                showConfirmButton: false,
+                background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                customClass: { popup: 'rounded-[2rem]' }
+            });
+        }
+    });
+
+    // 4. الإلغاء مع طلب السبب (Workflow)
+    const cancelWithReason = async (aid) => {
+        const { value: reason } = await Swal.fire({
+            title: 'إلغاء الموعد',
+            input: 'textarea',
+            inputLabel: 'يرجى كتابة سبب الإلغاء للمريض',
+            inputPlaceholder: 'اكتب السبب هنا...',
+            showCancelButton: true,
+            confirmButtonText: 'تأكيد الإلغاء',
+            cancelButtonText: 'تراجع',
+            confirmButtonColor: '#ef4444',
+            background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+            customClass: {
+                popup: 'rounded-[2rem]',
+                input: 'rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white focus:ring-rose-500'
+            },
+            inputValidator: (value) => {
+                if (!value) return 'يجب كتابة سبب الإلغاء!';
+            }
+        });
+
+        if (reason) {
+            try {
+                // استخدام الـ mutateAsync اللي تحت لضمان الترتيب
+                await updateStatusAsync({ aid, status: 'Canceled' });
+                await updateReasonAsync({ aid, reason });
+
+                queryClient.invalidateQueries(['appointments']);
+                Swal.fire('تم الإلغاء', 'تم إخطار المريض بالسبب', 'success');
+            } catch (error) {
+                Swal.fire('خطأ', 'فشل تنفيذ العملية', 'error');
+            }
+        }
+    };
+
+    // 5 - جلب الحجوزات عن طريق الحالة فقط (مثلاً: Available, Pending, Accepted,Canceled)
+    const getAppointmentsByStatus = (status) => useQuery({
+        queryKey: ['appointments', status],
+        queryFn: () => appointmentService.getByStatus(status), // تأكد من وجود الميثود في الـ service
+        enabled: !!status, // لا يتم التنفيذ إلا إذا تم تمرير حالة
+    });
+
+    const allAppointmentsQuery = useQuery({
+        queryKey: ['appointments', 'all'],
+        queryFn: appointmentService.getAll, // تأكد من وجودها في الـ service
+        enabled: false // سنجعلها تعمل فقط عند الحاجة
+    });
+    // الميوتيشنز الداخلية المساعدة (مربوطة بـ appointmentService)
+    const { mutateAsync: updateStatusAsync } = useMutation({
+        mutationFn: ({ aid, status }) => appointmentService.updateStatus(aid, status)
+    });
+
+    const { mutateAsync: updateReasonAsync } = useMutation({
+        mutationFn: ({ aid, reason }) => appointmentService.updateReason(aid, reason)
+    });
+
     return {
+        appointments: appointmentsQuery.data,
+        isLoading: appointmentsQuery.isLoading,
         createGuestBooking,
-        changeStatus
+        changeStatus,
+        bookPatient,
+        getAppointmentsByStatus,
+        allAppointmentsQuery,
+        cancelWithReason
     };
 };

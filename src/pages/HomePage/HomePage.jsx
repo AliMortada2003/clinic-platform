@@ -7,8 +7,10 @@ import Hero from "../../sections/Hero";
 import ServicesSection from "../../sections/ServicesSection";
 import WorkingHours from "../../sections/WorkingHours";
 import BookingSystem from "../../sections/BookingSystem";
+import Header from "../../components/layout/Navbar";
 const HomePage = () =>
     <div className="">
+        <Header />
         <Hero />
         <AboutSection />
         <ServicesSection />
@@ -17,5 +19,6 @@ const HomePage = () =>
         <AdviceSection />
         <FAQ />
         <ContactSection />
+        <Footer/>
     </div>;
 export default HomePage;

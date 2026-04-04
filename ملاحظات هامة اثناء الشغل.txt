@@ -1,0 +1,13 @@
+1- لو وقت الحجز عدى خلاص من غير ما اخد عليه اكشن , ممكن بدل ما انت بتعبت قيد الانتظار , تخليها اي حاجة علشان ابقى عارف بس 
+
+2-ال state لازم تتعمل بعد ما اخلص 
+
+    updateStatus: async (aid, status) => {
+        const res = await axiosApi.put(`/Appointment/${aid}/status`, null, {
+            params: { status: status } // Axios هيحولها تلقائياً لـ ?status=Accepted
+        });
+        return res.data;
+    },
+3- لما اعمل accept لتاريخ 
+
+4-

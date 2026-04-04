@@ -1,119 +1,103 @@
 import React, { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
-
-
-// Components
-import CalendarView from '../components/boockSystem/CalendarView';
-import SlotsList from '../components/boockSystem/SlotsList';
-import BookingModal from '../components/boockSystem/BookingModal';
 import { useAvailableDays } from '../hocks/useAvailableDays';
-import { useAppointment } from '../hocks/useAppointment';
 import { useSlots } from '../hocks/useSlots';
+import { useAppointment } from '../hocks/useAppointment';
+import BookingModal from './../components/boockSystem/BookingModal';
+import SlotsList from './../components/boockSystem/SlotsList';
+import CalendarView from './../components/boockSystem/CalendarView';
+import { useAuth } from '../hocks/useAuth';
 
-const BookingSystem = () => {
+const BookingFlow = () => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // States الأساسية
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState(today);
     const [selectedDayId, setSelectedDayId] = useState(null);
     const [selectedDayName, setSelectedDayName] = useState("");
     const [selectedSlotId, setSelectedSlotId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // 1. استخدام هوك الأيام (بتاعك)
-    const { getDaysQuery } = useAvailableDays();
-    const { data: serverDays, isLoading: daysLoading } = getDaysQuery();
-
-    // 2. استخدام هوك الساعات (بتاعك) - بياخد الـ ID المختار حالياً
+    const { user, isAuthenticated } = useAuth()
+    // console.log(user)
+    const { availableDays, isLoading: daysLoading } = useAvailableDays();
     const { slots, isLoading: slotsLoading } = useSlots(selectedDayId);
-    const { createGuestBooking } = useAppointment(selectedDayId);
+console.log(availableDays)
+    // الهوك بتاعك بعد ما ضفت فيه bookPatient
+    const { createGuestBooking, bookPatient } = useAppointment(selectedDayId);
 
-    // 3. استخدام هوك الحجز
     const handleDayClick = (day, isAvailable) => {
         if (!isAvailable) return;
+        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayData = availableDays.find(d => d.date?.startsWith(dateStr) || d.availableDay?.startsWith(dateStr));
 
-        // 1. تنسيق التاريخ الحالي المختار (yyyy-mm-dd)
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const dayStr = String(day).padStart(2, '0');
-        const dateStr = `${year}-${month}-${dayStr}`;
+        setSelectedDayId(dayData?.id);
+        setSelectedDayName(dateStr);
+        setSelectedSlotId(null);
+    };
 
-        // console.log("Searching for date:", dateStr); // للديبرج
-        const dayData = serverDays?.find(d => {
-            const serverDate = d.availableDay || d.date; // جرب الاسمين احتياطي
-            return serverDate?.toString().includes(dateStr);
-        });
+    const handleConfirmClick = () => {
+        if (!selectedSlotId) return;
 
-        if (dayData) {
-            // تأكد من اسم الخاصية: هل هي id ولا availableDayId ؟
-            const idToSet = dayData.availableDayId || dayData.id;
-
-            setSelectedDayId(idToSet);
-            setSelectedDayName(dateStr);
-            setSelectedSlotId(null);
+        if (isAuthenticated && user?.patientId) {
+            // لو مسجل: نادِ دالة الحجز المباشر فوراً
+            bookPatient.mutate({ patientId: user?.patientId, slotId: selectedSlotId });
         } else {
-            console.error("Day data not found in server response for:", dateStr);
+            // لو مش مسجل: افتح المودال لجمع البيانات
+            setIsModalOpen(true);
         }
     };
 
     return (
-        <section className="py-12 bg-slate-50 dark:bg-slate-900 min-h-screen" dir="rtl">
-            <div className="container max-w-6xl mx-auto px-6">
-                <div className="grid lg:grid-cols-12 gap-10">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-10" dir="rtl">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                    {/* عمود التقويم - CalendarView */}
-                    <div className="lg:col-span-7">
-                        <CalendarView
-                            currentDate={currentDate}
-                            setCurrentDate={setCurrentDate}
-                            daysLoading={daysLoading}
-                            serverDays={serverDays}
-                            handleDayClick={handleDayClick}
-                            selectedDayName={selectedDayName}
-                            today={today}
-                        />
-                    </div>  
+                {/* التقويم */}
+                <div className="lg:col-span-6">
+                    <CalendarView
+                        currentDate={currentDate}
+                        setCurrentDate={setCurrentDate}
+                        daysLoading={daysLoading}
+                        serverDays={availableDays}
+                        handleDayClick={handleDayClick}
+                        selectedDayName={selectedDayName}
+                        today={today}
+                    />
+                </div>
 
-                    {/* عمود المواعيد - SlotsList */}
-                    <div className="lg:col-span-5">
-                        <SlotsList
-                            selectedDayId={selectedDayId}
-                            selectedDayName={selectedDayName}
-                            slots={slots}
-                            slotsLoading={slotsLoading}
-                            selectedSlotId={selectedSlotId}
-                            setSelectedSlotId={setSelectedSlotId}
-                            onConfirmClick={() => setIsModalOpen(true)}
-                        />
-                    </div>
-
+                {/* الساعات */}
+                <div className="lg:col-span-6">
+                    <SlotsList
+                        selectedDayId={selectedDayId}
+                        selectedDayName={selectedDayName}
+                        slots={slots}
+                        slotsLoading={slotsLoading}
+                        selectedSlotId={selectedSlotId}
+                        setSelectedSlotId={setSelectedSlotId}
+                        onConfirmClick={handleConfirmClick}
+                        isRegistered={isAuthenticated}
+                    />
                 </div>
             </div>
 
-            {/* مودال الحجز */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <BookingModal
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                        selectedDay={selectedDayName}
-                        // بنجيب وقت الساعة المختارة من قائمة الـ slots
-                        selectedTime={slots?.find(s => s.id === selectedSlotId)?.startTime}
-                        onConfirm={(formData) => {
-                            createGuestBooking.mutate({
-                                slotId: selectedSlotId,
-                                patientData: formData
-                            }, {
-                                onSuccess: () => setIsModalOpen(false)
-                            });
-                        }}
-                        isLoading={createGuestBooking.isPending}
-                    />
-                )}
-            </AnimatePresence>
-        </section>
+            {/* المودال يظهر فقط للـ Guest */}
+            <BookingModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                selectedDay={selectedDayName}
+                selectedTime={slots?.find(s => s.id === selectedSlotId)?.startTime}
+                isLoading={createGuestBooking.isPending}
+                onConfirm={(formData) => {
+                    createGuestBooking.mutate({
+                        slotId: selectedSlotId,
+                        patientData: formData
+                    }, {
+                        onSuccess: () => {
+                            setIsModalOpen(false);
+                            setSelectedSlotId(null);
+                            toast.success("تم الحجز بنجاح");
+                        }
+                    });
+                }}
+            />
+        </div>
     );
 };
 
-export default BookingSystem;
+export default BookingFlow;
