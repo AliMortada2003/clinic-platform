@@ -74,7 +74,7 @@ const AppointmentsPage = () => {
     const currentTabInfo = tabs.find(t => t.id === activeTab);
     const isLoading = activeTab === 'Today' ? isAllLoading : isStatusLoading;
 
-    console.log(filteredAppointments)
+    // console.log(filteredAppointments)
     // دالة فتح التفاصيل
     const handleViewDetails = (appointment) => {
         setSelectedAppointment(appointment);

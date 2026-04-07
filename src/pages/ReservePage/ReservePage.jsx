@@ -6,11 +6,9 @@ import Header from '../../components/layout/Navbar';
 const ReservePage = () => {
     return (
         <>
-            <Header />
             <div className="py-20 transition-colors duration-300">
                 <BookingSystem />
             </div>
-            <Footer />
         </>
     );
 }

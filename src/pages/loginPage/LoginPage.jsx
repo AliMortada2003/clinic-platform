@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import FormField from "../../components/form/FormField";
 import { useAuth } from './../../hocks/useAuth';
 import PasswordField from "../../components/form/PasswordField";
+import ChatBot from "../../sections/ChatBot";
 
 const Login = () => {
     // استدعاء هوك الـ Auth
@@ -46,9 +47,9 @@ const Login = () => {
                         <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">مرحباً بك في بوابتك الطبية الآمنة</p>
                     </div>
 
-                    <Formik 
-                        initialValues={initialValues} 
-                        validationSchema={validationSchema} 
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
                         {({ isSubmitting }) => (

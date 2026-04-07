@@ -98,14 +98,6 @@ const PatientLayout = () => {
                     </div>
                 </footer>
             </div>
-
-            {/* Overlay للموبايل عشان لما السايدبار يتفتح يقفل باقي الصفحة */}
-            {isSidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[40] lg:hidden animate-in fade-in duration-300"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
-            )}
         </div>
     );
 };

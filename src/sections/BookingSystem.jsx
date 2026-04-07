@@ -6,6 +6,8 @@ import BookingModal from './../components/boockSystem/BookingModal';
 import SlotsList from './../components/boockSystem/SlotsList';
 import CalendarView from './../components/boockSystem/CalendarView';
 import { useAuth } from '../hocks/useAuth';
+import PageSectionHeader from '../components/PageSectionHeader';
+import { Lightbulb } from 'lucide-react';
 
 const BookingFlow = () => {
     const today = new Date();
@@ -18,7 +20,7 @@ const BookingFlow = () => {
     // console.log(user)
     const { availableDays, isLoading: daysLoading } = useAvailableDays();
     const { slots, isLoading: slotsLoading } = useSlots(selectedDayId);
-console.log(availableDays)
+    console.log(availableDays)
     // الهوك بتاعك بعد ما ضفت فيه bookPatient
     const { createGuestBooking, bookPatient } = useAppointment(selectedDayId);
 
@@ -46,6 +48,14 @@ console.log(availableDays)
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-10" dir="rtl">
+            <PageSectionHeader
+                icon={Lightbulb}
+                badgeText="إرشادات هامة"
+                title="احجز موعد"
+                highlightTitle="الان"
+                description="إرشادات بسيطة لضمان أفضل تجربة خدمة وتوفير وقتك"
+                // center={false} // لكي يتناسب مع سياق المحتوى الجانبي أو الداخلي
+            />
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 {/* التقويم */}

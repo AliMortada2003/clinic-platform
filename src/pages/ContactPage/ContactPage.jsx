@@ -2,6 +2,7 @@ import React from 'react'
 import ContactSection from '../../sections/ContactSection'
 import ServicesSection from '../../sections/ServicesSection'
 import Footer from '../../sections/FooterSection'
+import ChatBot from '../../sections/ChatBot'
 
 function ContactPage() {
 

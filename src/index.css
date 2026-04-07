@@ -11,7 +11,7 @@ button:hover {
 
 /* شكل الخلفية (المجرى) */
 ::-webkit-scrollbar-track {
-  background: #070b14; /* نفس لون الدارك مود عندك */
+  background: #eaeaec; /* نفس لون الدارك مود عندك */
 }
 
 /* شكل الـ Handle (الجزء المتحرك) */

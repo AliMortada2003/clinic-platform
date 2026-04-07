@@ -30,7 +30,7 @@ const PatientsPage = () => {
         return { total, avgAge, males, females };
     }, [patients]);
 
-    console.log(patients)
+    // console.log(patients)
     const handleDelete = (id) => {
         Swal.fire({
             title: 'هل أنت متأكد؟',

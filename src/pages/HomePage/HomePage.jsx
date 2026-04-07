@@ -14,8 +14,6 @@ import ChatBot from "../../sections/ChatBot";
 const HomePage = () => {
     return (
         <div className="relative overflow-x-hidden transition-colors duration-300">
-            {/* الهيدر والسكاشن الرئيسية */}
-            <Header />
             <main>
                 <Hero />
                 <AboutSection />
@@ -24,11 +22,6 @@ const HomePage = () => {
                 <FAQ />
                 <ContactSection />
             </main>
-            <Footer />
-
-            {/* 🤖 الشات بوت الذكي (نبض) */}
-            {/* سيظهر كزر عائم في أسفل الصفحة من جهة اليسار كما صممناه */}
-            <ChatBot />
         </div>
     );
 };

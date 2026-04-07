@@ -139,7 +139,7 @@ const ContactSection = () => {
                                             placeholder="الاسم الكامل"
                                             name="name"
                                             onChange={(e) => setName(e.target.value)}
-                                            className="w-full bg-gray-50  border border-gray-400 dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm"
+                                            className="w-full bg-gray-50  dark:border-white/1 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -149,14 +149,14 @@ const ContactSection = () => {
                                             name="phone"
                                             placeholder="01XXXXXXXXX"
                                             onChange={(e) => setPhone(e.target.value)}
-                                            className="w-full bg-gray-50  border border-gray-400 dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm" dir="ltr"
+                                            className="w-full bg-gray-50   dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm" dir="ltr"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700 dark:text-gray-300">نوع الاستشارة / التخصص</label>
-                                    <select name="typeOption" onChange={(e) => setTypeOption(e.target.value)} className="w-full bg-gray-50  border border-gray-400 dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm" >
+                                    <select name="typeOption" onChange={(e) => setTypeOption(e.target.value)} className="w-full bg-gray-50   dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm" >
                                         <option>كشف عام</option>
                                         <option>متابعة دورية</option>
                                         <option>استشارة طبية</option>
@@ -171,7 +171,7 @@ const ContactSection = () => {
                                         placeholder="هل تعاني من أعراض محددة؟"
                                         name="message"
                                         onChange={(e) => setMessage(e.target.value)}
-                                        className="w-full bg-gray-50  border border-gray-400 dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm"
+                                        className="w-full bg-gray-50  dark:border-white/10 rounded-xl p-4 outline-none focus:border-cyan-500 focus:ring-2 ring-cyan-500/20 transition-all text-sm"
                                     ></textarea>
                                 </div>
 

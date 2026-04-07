@@ -16,7 +16,7 @@ const editDoctorValidationSchema = Yup.object().shape({
 
 const EditDoctorModal = ({ doctor, isOpen, onClose }) => {
     if (!isOpen || !doctor) return null;
-    console.log(doctor)
+    // console.log(doctor)
     const initialValues = {
         firstName: doctor.firstName || "",
         lastName: doctor.lastName || "",
