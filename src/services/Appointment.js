@@ -39,15 +39,20 @@ const appointmentService = {
         const res = await axiosApi.get(`/Appointment/Phone/${phone}`);
         return res.data;
     },
-    // 6. استعلام برقم الهاتف
-    getPatientById: async (id) => {
-        const res = await axiosApi.get(`/Appointment/Patient/${id}`);
+
+    // 6- جلب الحجوزات الخاصة بالمريض
+    getPatientAppointments: async (patientId) => {
+        const res = await axiosApi.get(`/Appointment/Patient/${patientId}`);
         return res.data;
     },
 
     // 7. جلب كل المواعيد (للأدمن)
     getAll: async () => {
         const res = await axiosApi.get("/Appointment");
+        return res.data;
+    },
+    getAllInPresent: async () => {
+        const res = await axiosApi.get("/Appointment/Present");
         return res.data;
     }
     ,

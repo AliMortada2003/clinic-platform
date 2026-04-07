@@ -5,15 +5,15 @@ import { useTheme } from "../../context/ThemeContext";
 import MobileMenuButton from "./MobileMenuButton";
 import UserMenu from "./UserMenu";
 import NotificationMenu from './NotificationMenu';
+import { useNavigate } from "react-router-dom";
 
 const Topbar = ({ onMenuClick, roleLabel }) => {
     const { isDark, toggleTheme } = useTheme();
-    const { user, role, displayName } = useAuth();
+    const { user, userRole } = useAuth();
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const navigate = useNavigate()
+    const label = user?.firstName
 
-    const userType = (role || user?.profile?.type || "doctor").toLowerCase();
-    const label = roleLabel || (userType === "admin" ? "الإدارة العامة" : "العيادة الخاصة");
-    const name = displayName || user?.profile?.name || "دكتور";
 
     useEffect(() => {
         const handleStatus = () => setIsOnline(navigator.onLine);
@@ -41,16 +41,11 @@ const Topbar = ({ onMenuClick, roleLabel }) => {
                     <LayoutGrid size={22} className="text-cyan-500" />
                 </div>
 
-                <div className="flex flex-col text-right">
-                    <h1 className="text-sm md:text-lg font-black tracking-tight text-slate-900 dark:text-white">
-                        أهلاً، <span className="bg-gradient-to-l from-cyan-500 to-blue-600 bg-clip-text text-transparent">{name}</span>
+                <div className="flex gap-1">
+                    <h1 className="md:text-[25px]  font-black tracking-tight text-slate-900 dark:text-white">
+                        أهلاً <span className="bg-gradient-to-l from-cyan-500 to-blue-600 bg-clip-text text-transparent">{label}</span>
                     </h1>
-                    <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60 text-slate-500 dark:text-slate-400">
-                            {label}
-                        </span>
-                        <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOnline ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" : "bg-rose-500"}`} />
-                    </div>
+                    <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOnline ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" : "bg-rose-500"}`} />
                 </div>
             </div>
 
@@ -72,7 +67,7 @@ const Topbar = ({ onMenuClick, roleLabel }) => {
 
                 <div className="flex items-center gap-1">
                     <NotificationMenu isDark={isDark} />
-                    <UserMenu isOnline={isOnline} theme={isDark ? "dark" : "light"} />
+                    <UserMenu goTo={userRole === "Doctor" ? "/admin/profile" : "/patient/profile"} isOnline={isOnline} theme={isDark ? "dark" : "light"} />
                 </div>
             </div>
         </header>

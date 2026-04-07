@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, HelpCircle } from 'lucide-react';
+import PageSectionHeader from '../components/PageSectionHeader';
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -33,21 +34,16 @@ const FAQ = () => {
       {/* لمسة طبية في الخلفية */}
       <div className="container mx-auto px-4 max-w-7xl">
 
-        {/* العناوين */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-sm mb-4"
-          >
-            <HelpCircle size={18} />
-            <span>لديك استفسار؟</span>
-          </motion.div>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">
-            الأسئلة <span className="text-cyan-600">الشائعة</span>
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">إجابات سريعة على تساؤلاتكم حول خدماتنا الطبية</p>
-        </div>
+        {/* header */}
+        <PageSectionHeader
+          icon={HelpCircle}
+          badgeText="لديك استفسار؟"
+          title="الأسئلة"
+          highlightTitle="الشائعة"
+          description="إجابات سريعة على تساؤلاتكم حول خدماتنا الطبية"
+          center={true} // اختياري لأن القيمة الافتراضية true
+        />
+
 
         {/* قائمة الأسئلة */}
         <div className="space-y-4 ">
@@ -91,7 +87,7 @@ const FAQ = () => {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                     >
                       <div className="px-6 md:px-8 pb-8 pt-0">
-                        <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6"></div>
+                        <div className="h-px w-full bg-white dark:bg-slate-800 mb-6"></div>
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base md:text-lg">
                           {faq.answer}
                         </p>

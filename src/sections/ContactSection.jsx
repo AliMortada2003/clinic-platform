@@ -3,6 +3,7 @@ import ScrollAnimation from './../helpers/ScrollAnimation';
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import PageSectionHeader from "../components/PageSectionHeader";
 
 const ContactSection = () => {
     const [name, setName] = useState(null);
@@ -48,23 +49,14 @@ const ContactSection = () => {
             dir="rtl">
 
             <div className="container max-w-7xl mx-auto px-6 relative z-10">
-                {/* العنوان - مضاف إليه أنميشن من الأعلى */}
-                <div className="text-center mb-16">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-sm mb-4"
-                    >
-                        <Headphones size={18} />
-                        <span>تواصل معنا</span>
-                    </motion.div>
-                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">
-                        نحن دائماً <span className="text-cyan-600">بالقرب منك</span>
-                    </h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">
-                        فريقنا الطبي والإداري مستعد للإجابة على جميع استفساراتكم على مدار الساعة
-                    </p>
-                </div>
+                <PageSectionHeader
+                    icon={Headphones}
+                    badgeText="تواصل معنا"
+                    title="نحن دائماً"
+                    highlightTitle="بالقرب منك"
+                    description="فريقنا الطبي والإداري مستعد للإجابة على جميع استفساراتكم على مدار الساعة لضمان راحتكم"
+                    center={true}
+                />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-9 items-stretch max-w-6xl mx-auto">
 
                     {/* معلومات التواصل (Side 1) */}

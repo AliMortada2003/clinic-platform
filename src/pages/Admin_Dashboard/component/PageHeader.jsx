@@ -16,10 +16,10 @@ const PageHeader = ({ title, description, icon: Icon, children }) => {
                     )}
 
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                        <h1 className="text-2xl md:text-3xl font-black text-cyan-700 dark:text-white tracking-tight">
                             {title}
                         </h1>
-                        <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                        <p className="text-cyan-400 dark:text-slate-400 mt-1 font-medium">
                             {description}
                         </p>
                     </div>

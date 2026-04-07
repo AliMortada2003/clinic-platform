@@ -23,7 +23,7 @@ const AppContent = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
+    <div className="min-h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <ScrollToTop />
       {/* <Header /> */}
       <main>

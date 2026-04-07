@@ -9,7 +9,7 @@ export const useAppointment = () => {
     // 1. جلب كل المواعيد (للأدمن)
     const appointmentsQuery = useQuery({
         queryKey: ['appointments'],
-        queryFn: appointmentService.getAll, // استخدام الـ service الجديدة
+        queryFn: appointmentService.getAll(), // استخدام الـ service الجديدة
     });
 
     // 2. هوك الحجز لـ Guest
@@ -52,6 +52,7 @@ export const useAppointment = () => {
             })
         }
     });
+
     // 3. تغيير الحالة (Accepted / Pending)
     const changeStatus = useMutation({
         mutationFn: ({ aid, status }) => appointmentService.updateStatus(aid, status),
@@ -66,6 +67,16 @@ export const useAppointment = () => {
                 background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
                 customClass: { popup: 'rounded-[2rem]' }
             });
+        },
+        onError: (err) => {
+            Swal.fire({
+                icon: "error",
+                title: "فشل تحديث الحالة",
+                text: `${err?.response.data || "ربما الموعد قديم"}`,
+                confirmButtonColor: '#ef4444',
+                background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                customClass: { popup: 'rounded-[2rem]' }
+            })
         }
     });
 
@@ -104,11 +115,33 @@ export const useAppointment = () => {
         }
     };
 
-    // 5 - جلب الحجوزات عن طريق الحالة فقط (مثلاً: Available, Pending, Accepted,Canceled)
+    // 5 - جلب الحجوزات (المستقبلية أو حسب الحالة)
     const getAppointmentsByStatus = (status) => useQuery({
+        // مهم جداً: إضافة الـ status للـ queryKey لضمان تحديث البيانات عند تغيير التبويب
         queryKey: ['appointments', status],
-        queryFn: () => appointmentService.getByStatus(status), // تأكد من وجود الميثود في الـ service
-        enabled: !!status, // لا يتم التنفيذ إلا إذا تم تمرير حالة
+        queryFn: () => {
+            // الحالة الخاصة: حجوزات المستقبل
+            if (status === "Present" || status === "Today") {
+                return appointmentService.getAllInPresent();
+            }
+
+            // الحالات العامة: الكل أو حالة محددة (Pending, Accepted, etc.)
+            if (!status || status === 'All') {
+                return appointmentService.getAll();
+            }
+
+            return appointmentService.getByStatus(status);
+        },
+        // الهوك يشتغل فقط إذا كان الـ status متاح (لتجنب طلبات خاطئة)
+        enabled: !!status,
+    });
+
+    // 6 جلب بيانات الحجوزات الخاصة بالمريض
+    const getPatientAppointments = (patientId) => useQuery({
+        queryKey: ['appointments', 'patient', patientId],
+        queryFn: () => appointmentService.getPatientAppointments(patientId),
+        enabled: !!patientId,
+        staleTime: 1000 * 60 * 5, // اختياري: تجعل البيانات صالحة لمدة 5 دقائق
     });
 
     const allAppointmentsQuery = useQuery({
@@ -116,6 +149,8 @@ export const useAppointment = () => {
         queryFn: appointmentService.getAll, // تأكد من وجودها في الـ service
         enabled: false // سنجعلها تعمل فقط عند الحاجة
     });
+
+
     // الميوتيشنز الداخلية المساعدة (مربوطة بـ appointmentService)
     const { mutateAsync: updateStatusAsync } = useMutation({
         mutationFn: ({ aid, status }) => appointmentService.updateStatus(aid, status)
@@ -132,6 +167,7 @@ export const useAppointment = () => {
         changeStatus,
         bookPatient,
         getAppointmentsByStatus,
+        getPatientAppointments, // تمت الإضافة هنا
         allAppointmentsQuery,
         cancelWithReason
     };

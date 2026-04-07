@@ -1,24 +1,36 @@
-import AboutSection from "../../sections/AboutSection";
-import AdviceSection from "../../sections/AdviceSection";
-import ContactSection from "../../sections/ContactSection";
-import FAQ from "../../sections/FAQSection";
-import Footer from "../../sections/FooterSection";
-import Hero from "../../sections/Hero";
-import ServicesSection from "../../sections/ServicesSection";
-import WorkingHours from "../../sections/WorkingHours";
-import BookingSystem from "../../sections/BookingSystem";
+import React from "react";
 import Header from "../../components/layout/Navbar";
-const HomePage = () =>
-    <div className="">
-        <Header />
-        <Hero />
-        <AboutSection />
-        <ServicesSection />
-        {/* <WorkingHours /> */}
-        {/* <BookingSystem /> */}
-        <AdviceSection />
-        <FAQ />
-        <ContactSection />
-        <Footer/>
-    </div>;
+import Hero from "../../sections/Hero";
+import AboutSection from "../../sections/AboutSection";
+import ServicesSection from "../../sections/ServicesSection";
+import AdviceSection from "../../sections/AdviceSection";
+import FAQ from "../../sections/FAQSection";
+import ContactSection from "../../sections/ContactSection";
+import Footer from "../../sections/FooterSection";
+import ChatBot from "../../sections/ChatBot";
+
+// ✅ استيراد الشات بوت الجديد
+
+const HomePage = () => {
+    return (
+        <div className="relative overflow-x-hidden transition-colors duration-300">
+            {/* الهيدر والسكاشن الرئيسية */}
+            <Header />
+            <main>
+                <Hero />
+                <AboutSection />
+                <ServicesSection />
+                <AdviceSection />
+                <FAQ />
+                <ContactSection />
+            </main>
+            <Footer />
+
+            {/* 🤖 الشات بوت الذكي (نبض) */}
+            {/* سيظهر كزر عائم في أسفل الصفحة من جهة اليسار كما صممناه */}
+            <ChatBot />
+        </div>
+    );
+};
+
 export default HomePage;

@@ -9,6 +9,10 @@ import {
     Users,
     Timer,
     UserPlus,
+    Paperclip,
+    Wallet2,
+    User,
+    Plus,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -33,9 +37,11 @@ const AdminLayout = () => {
         { to: "/admin", icon: LayoutDashboard, label: "الرئيسية", end: true },
         { to: "/admin/appointments", icon: ClipboardList, label: "طلبات الحجز" },
         { to: "/admin/schedule", icon: Timer, label: "تنظيم وقتي" },
-        { to: "/admin/patients", icon: Users, label: "سجلات المرضى" },
-        { to: "/admin/profile", icon: UserCog, label: "بيانات العيادة" },
-        { to: "/admin/requests", icon: UserPlus, label: "طلبات التسجيل" },
+        { to: "/admin/bookmanual", icon: Plus, label: "إضافة حجز يدوي" },
+        { to: "/admin/patients", icon: Users, label: " المرضى المسجلين" },
+        { to: "/admin/reports", icon: Paperclip, label: "السجلات الخاصة بالمرضى" },
+        { to: "/admin/profile", icon: Wallet2, label: "بيانات العيادة" },
+        { to: "/admin/doctormanage", icon: User, label: "إدارة الاطباء" },
     ];
 
     return (

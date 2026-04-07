@@ -1,5 +1,6 @@
 import { Lightbulb, CalendarCheck, Clock8, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import PageSectionHeader from '../components/PageSectionHeader';
 
 const AdviceSection = () => {
     const advices = [
@@ -30,26 +31,25 @@ const AdviceSection = () => {
             className="py-10  transition-colors duration-300"
             dir="rtl">
             <div className="container max-w-7xl mx-auto px-6 relative z-10">
-                <div className="flex items-center gap-4 mb-12">
-                    <div className="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl">
-                        <Lightbulb className="text-cyan-600" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white">نصائح لحجز ناجح</h2>
-                        <p className="text-slate-500">إرشادات بسيطة لضمان أفضل تجربة خدمة</p>
-                    </div>
-                </div>
+                <PageSectionHeader
+                    icon={Lightbulb}
+                    badgeText="إرشادات هامة"
+                    title="نصائح لحجز"
+                    highlightTitle="ناجح"
+                    description="إرشادات بسيطة لضمان أفضل تجربة خدمة وتوفير وقتك"
+                    // center={false} // لكي يتناسب مع سياق المحتوى الجانبي أو الداخلي
+                />
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 text-center lg:grid-cols-4 gap-6">
                     {advices.map((advice, index) => (
                         <motion.div
                             key={index}
                             whileHover={{ y: -5 }}
-                            className="p-4 rounded-4xl bg-slate-200 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all"
+                            className="p-4 rounded-4xl bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all"
                         >
                             <div className="mb-4">{advice.icon}</div>
-                            <p className="text-sm lg:text-xl text-slate-900 dark:text-white mb-2">{advice.title}</p>
-                            <p className="text-slate-600 dark:text-slate-400 text-[9px] leading-relaxed">
+                            <p className="text-sm lg:text-xl text-cyan-700 font-bold dark:text-white mb-2">{advice.title}</p>
+                            <p className="text-slate-600 dark:text-slate-400 text-[9px] md:text-[14px] leading-relaxed">
                                 {advice.description}
                             </p>
                         </motion.div>

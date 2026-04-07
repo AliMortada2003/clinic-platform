@@ -2,6 +2,7 @@ import React from 'react';
 import { Award, BookOpen, Heart, Users, CheckCircle2, Stethoscope } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ScrollAnimation from '../helpers/ScrollAnimation';
+import PageSectionHeader from '../components/PageSectionHeader';
 
 const AboutSection = () => {
   const stats = [
@@ -13,27 +14,20 @@ const AboutSection = () => {
   return (
     <section
       id="about"
-      className=" py-10  transition-colors duration-300"
+      className="py-20 transition-colors duration-300"
       dir="rtl"
     >
       <div className="container max-w-7xl mx-auto px-6 relative z-10">
 
-        {/* 1. العنوان الموحد للسكشن */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-sm mb-4"
-          >
-            <Stethoscope size={18} />
-            <span>من نحن</span>
-          </motion.div>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">
-            عن الدكتور <span className="text-cyan-600">محمد</span>
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">خبرة عالمية تكرس جهودها لصحة قلبكم</p>
-        </div>
+        {/* 1. استخدام العنوان الموحد للسكشن */}
+        <PageSectionHeader
+          icon={Stethoscope}
+          badgeText="من نحن"
+          title="تعرف على"
+          highlightTitle="الدكتور محمد"
+          description="خبرة علمية وعملية واسعة في أدق الجراحات الطبية، نجمع بين التكنولوجيا المتطورة واللمسة الإنسانية الحانية."
+          center={true}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
@@ -56,6 +50,7 @@ const AboutSection = () => {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
                 className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl z-20 border border-slate-100 dark:border-slate-700 hidden md:block"
               >
                 <div className="flex items-center gap-4">
@@ -63,8 +58,8 @@ const AboutSection = () => {
                     <Award size={24} />
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-900 dark:text-white">دبلومة أكسفورد</h4>
-                    <p className="text-sm text-slate-500">في جراحات القلب</p>
+                    <h4 className="font-black text-slate-900 dark:text-white">زمالة دولية</h4>
+                    <p className="text-sm text-slate-500">في جراحات القلب والصدر</p>
                   </div>
                 </div>
               </motion.div>
@@ -75,13 +70,13 @@ const AboutSection = () => {
           <ScrollAnimation direction="right">
             <div className="text-right">
               <h4 className="text-cyan-600 dark:text-cyan-400 font-bold text-lg mb-4 flex items-center gap-3">
-                <span className="w-12 h-0.5 bg-cyan-600 dark:text-cyan-400"></span>
-                رائد جراحة القلب والصدر
+                <span className="w-12 h-0.5 bg-cyan-600"></span>
+                رسالة طبية سامية
               </h4>
               <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 leading-tight">
-                نسعى لتقديم رعاية صحية <span className="text-cyan-600 italic">بمعايير عالمية</span> ولمسة إنسانية
+                نسعى لتقديم رعاية صحية <span className="text-cyan-600 italic">بمعايير عالمية</span>
               </h2>
-              <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed font-medium">
                 الدكتور محمد استشاري أول في جراحات القلب المعقدة، كرس حياته المهنية لتقديم أرقى مستويات الرعاية الصحية. يؤمن بأن الطب ليس مجرد مهنة، بل هو رسالة تجمع بين العلم والرحمة لضمان حياة أفضل لكل مريض.
               </p>
 
@@ -93,7 +88,7 @@ const AboutSection = () => {
                   'أحدث بروتوكولات العلاج',
                   'استشارات مبنية على البراهين'
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border-r-4 border-cyan-500">
+                  <div key={idx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border-r-4 border-cyan-500 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm">
                     <CheckCircle2 className="text-cyan-500" size={18} />
                     <span className="text-slate-700 dark:text-slate-200 font-bold text-sm">{item}</span>
                   </div>
@@ -108,7 +103,7 @@ const AboutSection = () => {
                       {stat.icon}
                     </div>
                     <div className="text-2xl font-black text-slate-900 dark:text-white">{stat.value}</div>
-                    <div className="text-xs text-slate-500 font-bold mt-1">{stat.label}</div>
+                    <div className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-wider">{stat.label}</div>
                   </div>
                 ))}
               </div>

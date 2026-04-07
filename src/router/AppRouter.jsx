@@ -1,4 +1,3 @@
-// src/AppRouter.js
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
@@ -11,13 +10,12 @@ import Login from "../pages/loginPage/LoginPage";
 import Register from "../pages/registerPage/RegisterPage";
 import AdminRoutes from "../pages/Admin_Dashboard/Router/AdminRoutes";
 import PrivateRoute from "./PrivateRoute";
-
-// استيراد المكونات
-
+import PatientRoutes from "../pages/PatientDashboard/router/PatientRoutes";
 
 const AppRouter = () => {
     return (
         <Routes>
+            {/* 🌍 المسارات العامة */}
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/bookingsystem" element={<ReserveSections />} />
@@ -25,12 +23,19 @@ const AppRouter = () => {
             <Route path="/faq" element={<QyestionPage />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            {/* صفحة 404 */}
 
-            {/* ✅ Dashboards (Lazy Loaded) */}
-            <Route path="/admin/*" element={<PrivateRoute allowedRoles={["admin"]} />}>
-                <Route path="*" element={<AdminRoutes />} />
+            {/* ✅ مسارات الإدارة والدكاترة */}
+            {/* أضف "Doctor" هنا لأن هذا هو الـ Role الذي ظهر في الـ Log عندك */}
+            <Route element={<PrivateRoute allowedRoles={["Doctor"]} />}>
+                <Route path="/admin/*" element={<AdminRoutes />} />
             </Route>
+
+            {/* ✅ مسارات المرضى */}
+            <Route element={<PrivateRoute allowedRoles={["Patient"]} />}>
+                <Route path="/patient/*" element={<PatientRoutes />} />
+            </Route>
+
+            {/* 🚫 صفحة 404 */}
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

@@ -1,226 +1,193 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-    CalendarCheck,
-    ClipboardList,
-    Activity,
-    Clock,
-    TrendingUp,
-    RefreshCw,
-    CheckCircle2,
-    AlertCircle,
-    UserCog,
-    MessageCircleCode,
-    Timer
+import React, { useMemo } from "react";
+import { 
+    CalendarCheck, ClipboardList, Activity, Clock, TrendingUp, 
+    RefreshCw, CheckCircle2, AlertCircle, UserCog, MessageCircleCode, Users 
 } from "lucide-react";
 
+// الهوكس الخاصة بك
+import { useAppointment } from "../../hocks/useAppointment";
+import { useAvailableDays } from "../../hocks/useAvailableDays";
 
-// ✅ الكومبوننتس الجاهزة من مشروعك
+// المكونات
 import StatCard from "../../components/ui/cards/StatCard";
 import ChartContainer from "../../components/ui/charts/ChartContainer";
 import PieChart from "../../components/ui/charts/PieChart";
 import LineChart from "../../components/ui/charts/LineChart";
 import { useTheme } from "../../context/ThemeContext";
 
+
 function AdminDashboard() {
-    const { isDark } = useTheme(); // سحب حالة الثيم
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(false)
-    // بيانات افتراضية في حالة عدم توفر API حالياً (للتجربة)
-    const data = useMemo(() => ({
-        todayAppts: stats?.todayAppointmentsCount ?? 24,
-        pending: stats?.pendingConfirmCount ?? 5,
-        totalPatients: stats?.totalPatientsCount ?? 1250,
-        revenue: stats?.monthlyRevenue ?? 15400,
-        onlineRatio: stats?.onlineAppointments ?? 30,
-        inPersonRatio: stats?.inPersonAppointments ?? 70,
-    }), [stats]);
+    const { isDark } = useTheme();
+    const { appointments, isLoading: isApptsLoading, allAppointmentsQuery } = useAppointment();
+    const { days, isLoading: isDaysLoading } = useAvailableDays();
+
+    console.log(days)
+    // 🧮 معالجة البيانات لاستخراج الـ 8 ستاتس
+    const statsData = useMemo(() => {
+        if (!appointments) return {};
+
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+
+        // 1. حجوزات اليوم (فلترة المواعيد اللي تاريخها النهاردة)
+        const todayAppts = appointments.filter(a => a.date?.includes(todayStr)) || [];
+        
+        // 2. الحالات المؤكدة (Accepted)
+        const confirmedAppts = appointments.filter(a => a.status === "Accepted") || [];
+        
+        // 3. الحالات المعلقة (Pending) - تحتاج إجراء سريع
+        const pendingAppts = appointments.filter(a => a.status === "Pending") || [];
+        
+        // 4. إجمالي المرضى الفريدين (Unique Patients)
+        const uniquePatients = new Set(appointments.map(a => a.patientId || a.guestEmail)).size;
+
+        // 5. نسبة الإنجاز اليومية (كم مريض تم كشفه / إجمالي اليوم)
+        const completedToday = todayAppts.filter(a => a.status === "Completed").length;
+        const completionRate = todayAppts.length > 0 ? Math.round((completedToday / todayAppts.length) * 100) : 0;
+
+        // 6. الأيام المتاحة القادمة (من هوك الأيام)
+        const activeDaysCount = days?.filter(d => d.isAvailable).length || 0;
+
+        return {
+            todayCount: todayAppts.length,
+            pendingCount: pendingAppts.length,
+            totalPatients: uniquePatients,
+            confirmedCount: confirmedAppts.length,
+            activeDays: activeDaysCount,
+            completionRate: `${completionRate}%`,
+            newInquiries: 12, // يمكن ربطها بهوك الرسائل لاحقاً
+            canceledCount: appointments.filter(a => a.status === "Canceled").length
+        };
+    }, [appointments, days]);
 
     const statsCards = useMemo(() => [
-        // --- الصف الأول: إدارة المواعيد والتشغيل الفوري ---
         {
-            title: "حجوزات هذا الشهر",
-            value: data.todayAppts || 0,
-            subtext: "إجمالي المسجلين ",
+            title: "حجوزات اليوم",
+            value: statsData.todayCount || 0,
+            subtext: "إجمالي مواعيد اليوم",
             icon: CalendarCheck,
-            // في الـ Light بياخد لون صريح، في الـ Dark بياخد خلفية شفافة مع نص مضيء
-            accent: isDark ? "bg-blue-500 text-blue-400" : "bg-blue-600 text-white",
-            change: "+4",
+            accent: isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-600 text-white",
+            change: "مباشر",
             changeType: "increase",
             path: "/admin/appointments",
         },
         {
             title: "طلبات معلقة",
-            value: data.pending || 0,
-            subtext:  " طلبات تنتظر التأكيد",
+            value: statsData.pendingCount || 0,
+            subtext: "تنتظر الموافقة",
             icon: Clock,
-            accent: isDark ? "bg-amber-500 text-amber-400" : "bg-amber-500 text-white",
+            accent: isDark ? "bg-amber-500/20 text-amber-400" : "bg-amber-500 text-white",
             change: "عاجل",
             changeType: "warning",
-            path: "/admin/appointments?status=pending",
+            path: "/admin/appointments?status=Pending",
         },
-        // --- الصف الثاني: البيانات، التواصل، وجودة النظام ---
         {
             title: "إجمالي المرضى",
-            value: data.totalPatients || 0,
-            subtext: "قاعدة بيانات العيادة",
-            icon: UserCog,
-            accent: isDark ? "bg-emerald-500 text-emerald-400" : "bg-emerald-500 text-white",
-            change: "نمو 5%",
+            value: statsData.totalPatients || 0,
+            subtext: "مريض مسجل",
+            icon: Users,
+            accent: isDark ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-500 text-white",
+            change: "+5 جديد",
             changeType: "increase",
             path: "/admin/patients",
         },
         {
-            title: "استشارات جديدة من المرضى",
-            value: data.newMessages || "12",
-            subtext: "المتابعه مع المرضى والرد علي الرسائل",
-            icon: MessageCircleCode,
-            accent: isDark ? "bg-purple-500 text-purple-400" : "bg-purple-600 text-white",
-            change: "جديد",
+            title: "نسبة الإنجاز",
+            value: statsData.completionRate || "0%",
+            subtext: "من حجوزات اليوم",
+            icon: Activity,
+            accent: isDark ? "bg-cyan-500/20 text-cyan-400" : "bg-cyan-600 text-white",
+            change: "ممتاز",
             changeType: "increase",
-            path: "/admin/messages",
         },
         {
-            title: "تقارير المرضى ",
-            value: data.pendingReports || "7",
-            subtext: "تقارير خاصة بالمرضى لم يتم إدراجها حتى الان",
+            title: "أيام العمل المتاحة",
+            value: statsData.activeDays || 0,
+            subtext: "أيام مفعلة بالجدول",
             icon: ClipboardList,
-            accent: isDark ? "bg-cyan-500 text-cyan-400" : "bg-cyan-700 text-white",
-            change: "مهم",
+            accent: isDark ? "bg-purple-500/20 text-purple-400" : "bg-purple-600 text-white",
+            change: "مستقر",
             changeType: "info",
-            path: "/admin/reports/pending",
         },
-    ], [data, isDark]);
-    const appointmentsPie = useMemo(() => [
-        { name: "حضوري", value: data.inPersonRatio, color: isDark ? "#3b82f6" : "#2563eb" },
-        { name: "أونلاين", value: data.onlineRatio, color: isDark ? "#10b981" : "#059669" },
-    ], [data, isDark]);
+        {
+            title: "المواعيد المؤكدة",
+            value: statsData.confirmedCount || 0,
+            subtext: "حجوزات نهائية",
+            icon: CheckCircle2,
+            accent: isDark ? "bg-indigo-500/20 text-indigo-400" : "bg-indigo-600 text-white",
+            change: "مستمر",
+            changeType: "increase",
+        },
+        {
+            title: "استشارات جديدة",
+            value: statsData.newInquiries || 0,
+            subtext: "رسائل المرضى",
+            icon: MessageCircleCode,
+            accent: isDark ? "bg-rose-500/20 text-rose-400" : "bg-rose-600 text-white",
+            change: "تفاعل",
+            changeType: "increase",
+        },
+        {
+            title: "حجوزات ملغاة",
+            value: statsData.canceledCount || 0,
+            subtext: "إجمالي الملغي",
+            icon: AlertCircle,
+            accent: isDark ? "bg-slate-500/20 text-slate-400" : "bg-slate-700 text-white",
+            change: "تنبيه",
+            changeType: "info",
+        }
+    ], [statsData, isDark]);
 
-    const growthData = [
-        { name: "سبت", حجوزات: 12 },
-        { name: "أحد", حجوزات: 18 },
-        { name: "اثنين", حجوزات: 15 },
-        { name: "ثلاثاء", حجوزات: 24 },
-        { name: "أربعاء", حجوزات: 20 },
-        { name: "خميس", حجوزات: 28 },
-    ];
+    // if (isApptsLoading || isDaysLoading) return <div className="p-10 text-center font-bold">جاري تحميل بيانات العيادة...</div>;
 
     return (
-        <div dir="rtl" className={`space-y-6 transition-colors duration-300`}>
-
-            {/* Header Section */}
+        <div dir="rtl" className="space-y-6">
+            {/* Header */}
             <div className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6 rounded-3xl border shadow-sm
                 ${isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}>
                 <div>
                     <h1 className={`text-2xl font-black flex items-center gap-2 ${isDark ? "text-white" : "text-slate-800"}`}>
-                        <Activity className="text-blue-500" />
-                        لوحة التحكم
+                        <Activity className="text-cyan-500" />
+                        لوحة تحكم العيادة
                     </h1>
                     <p className={`text-sm mt-1 font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                        مرحباً دكتور، إليك ملخص نشاط العيادة لهذا اليوم.
+                        مرحباً دكتور محمد، إليك حالة العيادة الآن.
                     </p>
                 </div>
-
-                <button
-                    // onClick={fetchStats}
-                    disabled={loading}
-                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border font-bold transition-all
-                        ${isDark
-                            ? "bg-slate-800 border-slate-700 text-white hover:bg-slate-700"
-                            : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
-                        } disabled:opacity-50`}
+                <button 
+                    onClick={() => allAppointmentsQuery.refetch()}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-cyan-600 text-white font-bold hover:bg-cyan-700 transition-all"
                 >
-                    <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-                    تحديث البيانات
+                    <RefreshCw size={18} /> تحديث البيانات
                 </button>
             </div>
 
-            {/* Stats Cards Grid */}
-            <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* 8 Stats Grid */}
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {statsCards.map((item, idx) => (
-                    <StatCard key={idx}  {...item} isDark={isDark} />
+                    <StatCard key={idx} {...item} isDark={isDark} />
                 ))}
             </section>
 
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                    <ChartContainer
-                        title="تحليل الحجوزات الأسبوعي"
-                        description="تطور عدد الحجوزات على مدار الأسبوع الحالي"
-                        icon={TrendingUp}
-                        height={350}
-                    >
-                        <LineChart
-                            data={growthData}
+                    <ChartContainer title="نمو الحجوزات" icon={TrendingUp} height={300}>
+                        <LineChart 
+                            data={[{name: 'السبت', حجوزات: 5}, {name: 'الأحد', حجوزات: 12}]} 
                             xAxisDataKey="name"
-                            lines={[{ dataKey: "حجوزات", name: "المرضى", color: "#3b82f6", width: 4 }]}
+                            lines={[{ dataKey: "حجوزات", color: "#0891b2" }]} 
                         />
                     </ChartContainer>
                 </div>
-
-                <div>
-                    <ChartContainer
-                        title="نوع الكشف"
-                        description="نسبة الحضور الشخصي للأونلاين"
-                        icon={ClipboardList}
-                        height={350}
-                        isDark={isDark}
-                    >
-                        <PieChart
-                            data={appointmentsPie}
-                            innerRadius={70}
-                            outerRadius={100}
-                            showLegend={true}
-                            isDark={isDark}
-                        />
-                    </ChartContainer>
-                </div>
-            </div>
-
-            {/* Recent Activity / Appointments List */}
-            <div className={`p-6 rounded-3xl border shadow-sm ${isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}>
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-800"}`}>أحدث المواعيد القادمة</h3>
-                    <button className="text-sm font-bold text-blue-500 hover:underline">عرض الكل</button>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="w-full text-right">
-                        <thead>
-                            <tr className={`border-b ${isDark ? "border-slate-800 text-slate-400" : "border-slate-50 text-slate-500"} text-sm`}>
-                                <th className="pb-3 pr-2">المريض</th>
-                                <th className="pb-3 text-center">الوقت</th>
-                                <th className="pb-3 text-center">الحالة</th>
-                                <th className="pb-3 text-left">الإجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100/5">
-                            {[1, 2, 3].map((_, i) => (
-                                <tr key={i} className={`group transition-colors ${isDark ? "hover:bg-slate-800/50" : "hover:bg-slate-50/50"}`}>
-                                    <td className="py-4 pr-2">
-                                        <div className="font-bold text-sm">محمد أحمد علي</div>
-                                        <div className="text-xs text-slate-500">كشف رمد - جديد</div>
-                                    </td>
-                                    <td className="py-4 text-center">
-                                        <span className={`px-3 py-1 rounded-lg text-xs font-bold ${isDark ? "bg-slate-800" : "bg-slate-100"}`}>
-                                            10:30 ص
-                                        </span>
-                                    </td>
-                                    <td className="py-4 text-center">
-                                        <div className="flex items-center justify-center gap-1 text-xs text-emerald-500 font-bold">
-                                            <CheckCircle2 size={14} /> مؤكد
-                                        </div>
-                                    </td>
-                                    <td className="py-4 text-left">
-                                        <button className="p-2 hover:bg-blue-500/10 rounded-lg text-blue-500 transition-colors">
-                                            <AlertCircle size={18} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <ChartContainer title="توزيع الحالات" icon={PieChart} height={300}>
+                    <PieChart 
+                        data={[
+                            {name: 'مؤكد', value: statsData.confirmedCount, color: '#0891b2'},
+                            {name: 'معلق', value: statsData.pendingCount, color: '#f59e0b'}
+                        ]} 
+                    />
+                </ChartContainer>
             </div>
         </div>
     );

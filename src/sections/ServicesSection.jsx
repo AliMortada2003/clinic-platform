@@ -18,6 +18,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import PageSectionHeader from '../components/PageSectionHeader';
 
 const ServicesSlider = () => {
   const services = [
@@ -74,22 +75,13 @@ const ServicesSlider = () => {
       <div className="container max-w-7xl mx-auto px-6 relative z-10">
 
         {/* العناوين */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-sm mb-4"
-          >
-            <StethoscopeIcon size={18} />
-            <span>رعاية متميزة</span>
-          </motion.div>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">
-            خدماتنا <span className="text-cyan-600">الطبية</span>
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto">
-            نقدم مجموعة متكاملة من الخدمات الجراحية والعلاجية بأحدث التقنيات العالمية
-          </p>
-        </div>
+        <PageSectionHeader
+          icon={Stethoscope}
+          badgeText="رعاية متميزة"
+          title="خدماتنا"
+          highlightTitle="الطبية"
+          description="نقدم مجموعة متكاملة من الخدمات الجراحية والعلاجية بأحدث التقنيات العالمية"
+        />
 
         {/* السلايدر */}
         <div className="services-swiper-container relative">
@@ -108,7 +100,7 @@ const ServicesSlider = () => {
               <SwiperSlide key={index} className="h-auto  py-4">
                 <motion.div
                   whileHover={{ y: -10 }}
-                  className="bg-slate-200 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2rem] text-center shadow-sm hover:shadow-2xl hover:shadow-cyan-500/10 border border-white dark:border-slate-800 transition-all duration-300 group h-full flex flex-col"
+                  className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2rem] text-center shadow-sm hover:shadow-2xl hover:shadow-cyan-500/10 border border-white dark:border-slate-800 transition-all duration-300 group h-full flex flex-col"
                 >
                   {/* Icon */}
                   <div className={`w-16 h-16 ${service.bg} ${service.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner`}>

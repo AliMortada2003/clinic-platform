@@ -11,12 +11,14 @@ export const useAuth = () => {
     const navigate = useNavigate();
 
     // state to whatch user
-    const { data: user } = useQuery({
+    const { data: user, isLoading: isUserLoading } = useQuery({
         queryKey: ["user"],
         queryFn: () => cookies.get("user_data") || null,
         initialData: cookies.get("user_data"), // عشان يبدأ بالبيانات المحفوظة
         staleTime: Infinity, // البيانات مش هتنتهي صلاحيتها إلا لو إحنا مسحناها
     });
+
+    const isLoading = isUserLoading;
     // 1 login function
     const loginMutation = () => useMutation({
         mutationFn: api.login,
@@ -54,9 +56,9 @@ export const useAuth = () => {
             // التوجيه الذكي بعد التنبيه
             setTimeout(() => {
                 if (roles.includes("Doctor") || roles.includes("Admin")) {
-                    navigate("/admin/dashboard");
+                    navigate("/admin");
                 } else {
-                    navigate("/");
+                    navigate("/patient");
                 }
             }, 1500);
         },
@@ -135,6 +137,7 @@ export const useAuth = () => {
         logout,
         isAuthenticated: !!user,
         user,
-        userRole: cookies.get("user_role")
+        userRole: cookies.get("user_role"),
+        isLoading
     };
 };
