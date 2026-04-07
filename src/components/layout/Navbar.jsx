@@ -5,6 +5,7 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import DoctorLogo from '../Logo';
 import { useAuth } from '../../hocks/useAuth';
+import UserMenu from '../Topbar/UserMenu';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,23 +171,22 @@ const Header = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-white/5 shadow-2xl overflow-y-auto max-h-[90vh]"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="md:hidden absolute top-full  w-full text-center bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-white/5 shadow-2xl overflow-y-auto max-h-[90vh]"
           >
             <div className="px-4 py-6 space-y-2">
 
               {isAuthenticated && user && (
-                <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-white/5 rounded-2xl mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-cyan-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                    {user.firstName?.charAt(0).toUpperCase()}
+                <Link
+                  to={userRole === "Doctor" ? "/admin/profile" : "/patient/profile"}
+                  className="rounded-xl p-1  hover:bg-white/10 transition-all active:scale-95"
+                >
+                  <div className="relative h-15 w-15 ms-38 rounded-full bg-white/20 border border-white/30 overflow-hidden shadow-inner flex items-center justify-center text-white font-bold">
+                    <img src="/images/user.webp" alt="profile" className="w-full h-full object-cover" />
                   </div>
-                  <div>
-                    <p className="text-xs text-cyan-600 dark:text-cyan-400 font-black uppercase tracking-widest">{userRole === 'Doctor' ? 'الطبيب المختص' : 'مرحباً بك'}</p>
-                    <p className="text-xl font-black text-slate-900 dark:text-white">{user.firstName} {user.lastName}</p>
-                  </div>
-                </div>
+                </Link>
               )}
 
               {navLinks.map((link) => (

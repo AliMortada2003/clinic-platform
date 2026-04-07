@@ -13,7 +13,7 @@ const ScrollAnimation = ({ children, direction = "up", delay = 0.2, duration = 0
         offscreen: {
             opacity: 0,
             y: direction === "up" ? 50 : direction === "down" ? -50 : 0,
-            x: direction === "left" ? 50 : direction === "right" ? -50 : 0,
+            x: direction === "left" ? 20 : direction === "right" ? -20 : 0,
         },
         onscreen: {
             opacity: 1,
