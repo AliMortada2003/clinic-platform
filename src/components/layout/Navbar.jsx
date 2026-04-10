@@ -12,7 +12,7 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const { user, isAuthenticated, logout, userRole } = useAuth();
-  console.log(user, isAuthenticated)
+  // console.log(user, isAuthenticated)
   const location = useLocation();
   const menuRef = useRef(null);
   // إغلاق القائمة عند الضغط خارجها

@@ -51,11 +51,13 @@ const appointmentService = {
         const res = await axiosApi.get("/Appointment");
         return res.data;
     },
+
     getAllInPresent: async () => {
         const res = await axiosApi.get("/Appointment/Present");
         return res.data;
     }
     ,
+
     getByStatus: async (status) => {
         // الحالة هنا بتتحط مباشرة في الـ URL كـ Path
         const res = await axiosApi.get(`/Appointment/Status/${status}`);

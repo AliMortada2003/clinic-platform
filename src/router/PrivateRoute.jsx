@@ -22,9 +22,8 @@ export default function PrivateRoute({ allowedRoles }) {
     if (!isAllowed) {
         const role = userRole?.toLowerCase();
         // تأكد أن هذه المسارات معرفة في AppRouter
-        const redirectPath = (role === 'doctor') ? '/admin' : '/patient';
+        const redirectPath = (role === '*-*-*-*') ? '/admin' : '/patient';
         return <Navigate to={redirectPath} replace />;
     }
-
     return <Outlet />;
 }

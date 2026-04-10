@@ -16,7 +16,7 @@ export default function AdminRoutes() {
     return (
         <Routes>
             {/* الحماية العامة لجميع مسارات الأدمن */}
-            <Route element={<PrivateRoute allowedRoles={["Doctor"]} />}>
+            <Route element={<PrivateRoute allowedRoles={["*-*-*-*"]} />}>
                 <Route element={<AdminLayout />}>
                     {/* لوحة التحكم الرئيسية */}
                     <Route index element={<AdminDashboard />} />

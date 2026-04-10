@@ -26,7 +26,7 @@ const AppRouter = () => {
 
             {/* ✅ مسارات الإدارة والدكاترة */}
             {/* أضف "Doctor" هنا لأن هذا هو الـ Role الذي ظهر في الـ Log عندك */}
-            <Route element={<PrivateRoute allowedRoles={["Doctor"]} />}>
+            <Route element={<PrivateRoute allowedRoles={["*-*-*-*"]} />}>
                 <Route path="/admin/*" element={<AdminRoutes />} />
             </Route>
 

@@ -9,7 +9,7 @@ export const useAppointment = () => {
     // 1. جلب كل المواعيد (للأدمن)
     const appointmentsQuery = useQuery({
         queryKey: ['appointments'],
-        queryFn: appointmentService.getAll(), // استخدام الـ service الجديدة
+        queryFn: appointmentService.getAll, // استخدام الـ service الجديدة
     });
 
     // 2. هوك الحجز لـ Guest

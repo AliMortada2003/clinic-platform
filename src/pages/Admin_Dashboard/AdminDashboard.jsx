@@ -5,8 +5,8 @@ import {
 } from "lucide-react";
 
 // الهوكس الخاصة بك
-import { useAppointment } from "../../hocks/useAppointment";
 import { useAvailableDays } from "../../hocks/useAvailableDays";
+import { useAppointment } from "../../hocks/useAppointment";
 
 // المكونات
 import StatCard from "../../components/ui/cards/StatCard";
@@ -20,8 +20,6 @@ function AdminDashboard() {
     const { isDark } = useTheme();
     const { appointments, isLoading: isApptsLoading, allAppointmentsQuery } = useAppointment();
     const { days, isLoading: isDaysLoading } = useAvailableDays();
-
-    console.log(days)
     // 🧮 معالجة البيانات لاستخراج الـ 8 ستاتس
     const statsData = useMemo(() => {
         if (!appointments) return {};
@@ -138,7 +136,7 @@ function AdminDashboard() {
         }
     ], [statsData, isDark]);
 
-    // if (isApptsLoading || isDaysLoading) return <div className="p-10 text-center font-bold">جاري تحميل بيانات العيادة...</div>;
+    if (isApptsLoading || isDaysLoading) return <div className="p-10 text-center font-bold">جاري تحميل بيانات العيادة...</div>;
 
     return (
         <div dir="rtl" className="space-y-6">

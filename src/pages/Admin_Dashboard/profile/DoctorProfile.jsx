@@ -7,7 +7,7 @@ import { useAuth } from '../../../hocks/useAuth';
 const DoctorProfile = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-
+console.log(user)
     // استخدام doctorId من بيانات الأوتث
     const { doctor, isLoading } = useDoctors(user?.doctorId);
 

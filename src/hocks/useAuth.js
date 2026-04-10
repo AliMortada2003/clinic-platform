@@ -35,9 +35,14 @@ export const useAuth = () => {
             };
 
             // حفظ البيانات في الكوكيز
+            if (roles[0] == "Doctor") {
+                cookies.set("user_role", "*-*-*-*", { path: "/" });
+            } else {
+                cookies.set("user_role", "Patient", { path: "/" });
+            }
             cookies.set("auth_token", token, cookieOptions);
-            cookies.set("user_data", activeUser, { path: "/" });
-            cookies.set("user_role", roles[0], { path: "/" });
+            cookies.set("user_data", { ...activeUser }, { path: "/" });
+
 
             // تحديث كاش React Query
             queryClient.setQueryData(["user"], activeUser);

@@ -6,9 +6,9 @@ import PageSectionHeader from '../components/PageSectionHeader';
 
 const AboutSection = () => {
   const stats = [
-    { icon: <Users size={22} />, label: 'مريض تم علاجهم', value: '+15,000' },
+    { icon: <Users size={22} />, label: 'مريض تم علاجهم', value: '+700' },
     { icon: <Award size={22} />, label: 'سنوات خبرة', value: '+15' },
-    { icon: <Heart size={22} />, label: 'عملية جراحية', value: '+2,500' },
+    { icon: <Heart size={22} />, label: 'عملية جراحية', value: '+200' },
   ];
 
   return (
